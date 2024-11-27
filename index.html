@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESP32 Control Panel</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      text-align: center;
+      padding: 20px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Control ESP32 Device</h1>
+  <p>Click the buttons below to control your ESP32 device:</p>
+  <button id="onButton">Turn On LED</button>
+  <button id="offButton">Turn Off LED</button>
+
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+  <script>
+    // Устанавливаем соединение с MQTT-брокером
+    const client = mqtt.connect('wss://mqtt.yourbroker.com:8083/mqtt', {
+      username: 'your_username',
+      password: 'your_password'
+    });
+
+    // Подключаемся к брокеру и подписываемся на тему
+    client.on('connect', function () {
+      console.log('Connected to MQTT Broker');
+      client.subscribe('esp32/control'); // Тема для получения команд от ESP32
+    });
+
+    // Отправка команд на ESP32 при нажатии кнопок
+    document.getElementById('onButton').onclick = function() {
+      client.publish('esp32/control', 'on'); // Отправляем команду для включения LED
+    };
+
+    document.getElementById('offButton').onclick = function() {
+      client.publish('esp32/control', 'off'); // Отправляем команду для выключения LED
+    };
+
+  </script>
+
+</body>
+</html>
